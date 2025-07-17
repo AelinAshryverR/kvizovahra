@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AZ-kvíz - Sabi vs Milan</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background-color: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    header {
+      background: linear-gradient(to right, #2c3e50, #4a6491);
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      letter-spacing: 1px;
+    }
+    
+    .players {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    
+    .player {
+      background: linear-gradient(to right, #3498db, #2c3e50);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      width: 45%;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .player.active {
+      background: linear-gradient(to right, #e74c3c, #c0392b);
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+    
+    .player.sabi {
+      background: linear-gradient(to right, #9b59b6, #8e44ad);
+    }
+    
+    .player.milan {
+      background: linear-gradient(to right, #2ecc71, #27ae60);
+    }
+    
+    .player.active.sabi {
+      background: linear-gradient(to right, #d35400, #e74c3c);
+    }
+    
+    .player.active.milan {
+      background: linear-gradient(to right, #16a085, #27ae60);
+    }
+    
+    .score-display {
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    
+    .question-box {
+      padding: 30px;
+    }
+    
+    .question {
+      font-size: 1.4rem;
+      margin-bottom: 25px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-left: 5px solid #3498db;
+      border-radius: 0 10px 10px 0;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .answers button {
+      padding: 15px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, #f5f7fa, #e4e7eb);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .answers button:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .answers button:hover:before {
+      transform: translateX(100%);
+    }
+    
+    .answers button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+      background: linear-gradient(to bottom, #e3e8ee, #d1d8e0);
+    }
+    
+    .answers button:disabled {
+      cursor: not-allowed;
+    }
+    
+    .correct {
+      background: linear-gradient(to bottom, #2ecc71, #27ae60) !important;
+      color: white;
+      animation: pulse 0.5s;
+    }
+    
+    .incorrect {
+      background: linear-gradient(to bottom, #e74c3c, #c0392b) !important;
+      color: white;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .result {
+      font-size: 1.3rem;
+      font-weight: bold;
+      text-align: center;
+      padding: 15px;
+      border-radius: 10px;
+      margin: 20px 0;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .correct-result {
+      background-color: #d4edda;
+      color: #155724;
+      border: 2px solid #c3e6cb;
+      animation: slideIn 0.5s;
+    }
+    
+    .incorrect-result {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+      animation: shake 0.5s;
+    }
+    
+    @keyframes slideIn {
+      0% { transform: translateY(20px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
+    }
+    
+    .next-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 12px 40px;
+      font-size: 1.2rem;
+      background: linear-gradient(to right, #3498db, #2980b9);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .next-btn:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+    }
+    
+    .next-btn:hover:after {
+      transform: translateX(100%);
+    }
+    
+    .next-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+      background: linear-gradient(to right, #2980b9, #1c6ea4);
+    }
+    
+    .next-btn:disabled {
+      background: linear-gradient(to right, #95a5a6, #7f8c8d);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #2c3e50;
+      color: white;
+      font-size: 0.9rem;
+    }
+    
+    .category-tag {
+      display: inline-block;
+      background-color: #e74c3c;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 10px;
+    }
+    
+    .victory-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    
+    .victory-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .victory-content {
+      background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+      transform: scale(0.8);
+      transition: transform 0.5s ease;
+    }
+    
+    .victory-overlay.active .victory-content {
+      transform: scale(1);
+    }
+    
+    .victory-content h2 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    
+    .victory-content .winner-name {
+      font-size: 4rem;
+      font-weight: bold;
+      margin: 30px 0;
+      color: gold;
+      text-shadow: 0 0 20px rgba(255,215,0,0.8);
+      animation: glow 1.5s infinite alternate;
+    }
+    
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073; }
+      to { text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6; }
+    }
+    
+    .victory-content p {
+      font-size: 1.5rem;
+      color: white;
+      margin: 15px 0;
+    }
+    
+    .victory-content .final-score {
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      margin: 10px 0;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+    }
+    
+    .victory-content .final-score span {
+      padding: 10px 20px;
+      border-radius: 10px;
+      min-width: 150px;
+    }
+    
+    .sabi-score {
+      background: linear-gradient(to right, #9b59b6, #8e44ad);
+    }
+    
+    .milan-score {
+      background: linear-gradient(to right, #2ecc71, #27ae60);
+    }
+    
+    .new-game-btn {
+      background: linear-gradient(to right, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      border-radius: 50px;
+      margin-top: 30px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    
+    .new-game-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 7px 20px rgba(0,0,0,0.4);
+    }
+    
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #f00;
+      animation: confetti-fall 5s linear infinite;
+      opacity: 0;
+    }
+    
+    @keyframes confetti-fall {
+      0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+    
+    .goal-marker {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: gold;
+      color: #333;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(255,215,0,0.7);
+    }
+    
+    @media (max-width: 600px) {
+      .answers {
+        grid-template-columns: 1fr;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+      
+      .question {
+        font-size: 1.2rem;
+      }
+      
+      .players {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      .player {
+        width: 90%;
+      }
+      
+      .victory-content h2 {
+        font-size: 2rem;
+      }
+      
+      .victory-content .winner-name {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="goal-marker">
+      <i class="fas fa-trophy"></i> Víťazstvo: 150 bodov
+    </div>
+    
+    <header>
+      <h1>AZ-kvíz - Sabi vs Milan</h1>
+    </header>
+    
+    <div class="players">
+      <div id="player1" class="player sabi">
+        <div>Sabi: <span id="score1" class="score-display">0</span> bodov</div>
+      </div>
+      <div id="player2" class="player milan">
+        <div>Milan: <span id="score2" class="score-display">0</span> bodov</div>
+      </div>
+    </div>
+    
+    <div class="question-box">
+      <div id="question" class="question"></div>
+      
+      <div class="answers">
+        <button id="a"></button>
+        <button id="b"></button>
+        <button id="c"></button>
+        <button id="d"></button>
+      </div>
+      
+      <div id="result" class="result"></div>
+      
+      <button id="next" class="next-btn" disabled>Ďalšia otázka</button>
+    </div>
+    
+    <footer>
+      © 2023 AZ-kvíz pre 2 hráčov | Správna odpoveď: +10 bodov | Nesprávna: -10 bodov
+    </footer>
+    
+    <div id="victory-overlay" class="victory-overlay">
+      <div class="victory-content">
+        <h2><i class="fas fa-trophy"></i> Víťaz AZ-kvízu</h2>
+        <div class="winner-name" id="winner-name">Sabi</div>
+        <p>Gratulujeme k dosiahnutiu 150 bodov!</p>
+        
+        <div class="final-score">
+          <span class="sabi-score">Sabi: <span id="final-score1">0</span></span>
+          <span class="milan-score">Milan: <span id="final-score2">0</span></span>
+        </div>
+        
+        <button id="new-game" class="new-game-btn">
+          <i class="fas fa-redo"></i> Hrať znova
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // Disney otázky
+      {
+        question: "Ako sa volá morská čarodejnica v Malá morská víla?",
+        options: ["Morgana", "Vanessa", "Ursula", "Medúza"],
+        correct: "c",
+        category: "Disney"
+      },
+      {
+        question: "Ktoré zviera sa stane cisárom v Mulan 2 ako symbol mieru?",
+        options: ["Fénix", "Korytnačka", "Kráľovský kôň", "Panda"],
+        correct: "d",
+        category: "Disney"
+      },
+      {
+        question: "Kto z nasledujúcich NIE JE jedným zo siedmich trpaslíkov?",
+        options: ["Dudroš", "Veseľko", "Nervóz", "Spachtoš"],
+        correct: "c",
+        category: "Disney"
+      },
+      {
+        question: "V ktorom Disney filme vystupuje postava menom Flynn Rider?",
+        options: ["Ľadové kráľovstvo", "Na vlásku", "Zootropolis", "Kráska a zviera"],
+        correct: "b",
+        category: "Disney"
+      },
+      {
+        question: "Ako sa volá lev, ktorý zabije Mufasu v Levom kráľovi?",
+        options: ["Scar", "Zazu", "Kovu", "Shenzi"],
+        correct: "a",
+        category: "Disney"
+      },
+      {
+        question: "Ktorý Disney film obsahuje pieseň „Be Our Guest“?",
+        options: ["Aladin", "Kráska a zviera", "Popoluška", "Na vlásku"],
+        correct: "b",
+        category: "Disney"
+      },
+      {
+        question: "V ktorom roku mal premiéru film „Ľadové kráľovstvo“ (Frozen)?",
+        options: ["2010", "2013", "2015", "2017"],
+        correct: "b",
+        category: "Disney"
+      },
+      {
+        question: "Ako sa volá papagáj Džafara z Aladina?",
+        options: ["Abu", "Rajah", "Zazu", "Iago"],
+        correct: "d",
+        category: "Disney"
+      },
+      {
+        question: "Ktorý film obsahuje postavu menom Kuzco?",
+        options: ["Tarzan", "Cisárov nový groove", "Herkules", "Veľká šestka"],
+        correct: "b",
+        category: "Disney"
+      },
+      {
+        question: "Ako sa volá hlavná hrdinka vo filme „Kráska a zviera“?",
+        options: ["Aurora", "Belle", "Ella", "Giselle"],
+        correct: "b",
+        category: "Disney"
+      },
+      // Slovenské otázky
+      {
+        question: "Ktoré mesto je historicky považované za „mestskú bránu“ Slovenska z juhu?",
+        options: ["Komárno", "Lučenec", "Štúrovo", "Fiľakovo"],
+        correct: "d",
+        category: "Slovensko"
+      },
+      {
+        question: "Ako sa volá najdlhšia rieka pretekajúca výlučne územím Slovenska?",
+        options: ["Váh", "Hron", "Nitra", "Ipeľ"],
+        correct: "a",
+        category: "Slovensko"
+      },
+      {
+        question: "V ktorom roku vznikla samostatná Slovenská republika?",
+        options: ["1989", "1991", "1992", "1993"],
+        correct: "d",
+        category: "Slovensko"
+      },
+      {
+        question: "Kto bol prvým prezidentom samostatného Slovenska?",
+        options: ["Vladimír Mečiar", "Rudolf Schuster", "Michal Kováč", "Ivan Gašparovič"],
+        correct: "c",
+        category: "Slovensko"
+      },
+      {
+        question: "Ktoré z týchto miest sa nachádza najjužnejšie?",
+        options: ["Rimavská Sobota", "Veľký Krtíš", "Komárno", "Rožňava"],
+        correct: "c",
+        category: "Slovensko"
+      },
+      {
+        question: "Ako sa volá najvyšší vrch Slovenska?",
+        options: ["Gerlachovský štít", "Kriváň", "Chopok", "Ďumbier"],
+        correct: "a",
+        category: "Slovensko"
+      },
+      {
+        question: "V ktorom roku vstúpilo Slovensko do Európskej únie?",
+        options: ["2000", "2002", "2004", "2007"],
+        correct: "c",
+        category: "Slovensko"
+      },
+      // Európske otázky
+      {
+        question: "Ktorá európska krajina má najviac obyvateľov?",
+        options: ["Francúzsko", "Taliansko", "Nemecko", "Veľká Británia"],
+        correct: "c",
+        category: "Európa"
+      },
+      {
+        question: "Ktoré z týchto miest NIE JE hlavné mesto?",
+        options: ["Bern", "Oslo", "Porto", "Tallinn"],
+        correct: "c",
+        category: "Európa"
+      },
+      {
+        question: "Ktorá z týchto krajín nie je členom Európskej únie?",
+        options: ["Nórsko", "Chorvátsko", "Írsko", "Fínsko"],
+        correct: "a",
+        category: "Európa"
+      },
+      {
+        question: "Ktorá rieka preteká cez Budapešť?",
+        options: ["Rýn", "Labe", "Dunaj", "Seina"],
+        correct: "c",
+        category: "Európa"
+      },
+      {
+        question: "Ktorý európsky ostrov je najväčší?",
+        options: ["Island", "Sicília", "Írsko", "Veľká Británia"],
+        correct: "d",
+        category: "Európa"
+      },
+      // Sárin svet
+      {
+        question: "Ako sa volal prastarý kráľ z Terrasenu, ktorého hrob Aelin navštívila pod chrámom v knihe Dedička ohňa?",
+        options: ["Gavin Havilliard", "Brannon Galathynius", "Darion Ashryver", "Orlon Terrasen"],
+        correct: "b",
+        category: "Sárin svet"
+      },
+      {
+        question: "Kto z nasledovných NIE JE jedným z Lorcanových spolubojovníkov v čiernom oddiele Maeve?",
+        options: ["Gavriel", "Fenrys", "Vaughan", "Ren"],
+        correct: "d",
+        category: "Sárin svet"
+      },
+      // Ekonomika
+      {
+        question: "Ktorý z nasledujúcich faktorov NEPATRÍ medzi výrobný faktor „práca“?",
+        options: ["Manažér firmy", "Robotník na stavbe", "Stroj na výrobu", "Predavačka v obchode"],
+        correct: "c",
+        category: "Ekonomika"
+      },
+      {
+        question: "Ktorý pojem označuje mieru, akou ceny tovarov a služieb rastú v čase?",
+        options: ["Inflácia", "Deflácia", "Reciprocita", "Recesia"],
+        correct: "a",
+        category: "Ekonomika"
+      },
+      // Harry Potter
+      {
+        question: "Ako sa volá drak, ktorého Harry porazí v prvej úlohe Trojčarodejníckeho turnaja?",
+        options: ["Maďarský chvostorožec", "Nórsky ostrohán", "Čínsky ohnivák", "Švédsky krátkohlavec"],
+        correct: "a",
+        category: "Harry Potter"
+      },
+      {
+        question: "Koľko Weasleyovcov je spolu vo filme 'Harry Potter a Kameň mudrcov' (počítajúc aj rodičov)?",
+        options: ["6", "7", "9", "10"],
+        correct: "c",
+        category: "Harry Potter"
+      },
+      {
+        question: "Ktorý predmet sa profesorka Umbridgeová pokúša zakázať študentom učiť prakticky?",
+        options: ["Premieňanie", "Obrana proti čiernej mágii", "Elixíry", "Zaklínadlá"],
+        correct: "b",
+        category: "Harry Potter"
+      }
+    ];
+
+    let currentQuestion = {};
+    let currentPlayer = 1;
+    let answered = false;
+    let player1Score = 0;
+    let player2Score = 0;
+    let usedQuestions = [];
+    const winningScore = 150;
+
+    const questionEl = document.getElementById("question");
+    const buttons = {
+      a: document.getElementById("a"),
+      b: document.getElementById("b"),
+      c: document.getElementById("c"),
+      d: document.getElementById("d")
+    };
+    const player1El = document.getElementById("player1");
+    const player2El = document.getElementById("player2");
+    const score1El = document.getElementById("score1");
+    const score2El = document.getElementById("score2");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("next");
+    const victoryOverlay = document.getElementById("victory-overlay");
+    const winnerNameEl = document.getElementById("winner-name");
+    const finalScore1El = document.getElementById("final-score1");
+    const finalScore2El = document.getElementById("final-score2");
+    const newGameBtn = document.getElementById("new-game");
+
+    function loadQuestion() {
+      // Reset UI
+      answered = false;
+      resultEl.textContent = "";
+      resultEl.className = "result";
+      nextBtn.disabled = true;
+      
+      // Reset button styles
+      Object.values(buttons).forEach(btn => {
+        btn.disabled = false;
+        btn.className = "";
+      });
+      
+      // Highlight active player
+      player1El.classList.toggle("active", currentPlayer === 1);
+      player2El.classList.toggle("active", currentPlayer === 2);
+      
+      // Get random question that hasn't been used yet
+      let availableQuestions = questions.filter(q => !usedQuestions.includes(q));
+      
+      if (availableQuestions.length === 0) {
+        // Reset used questions if all have been used
+        usedQuestions = [];
+        availableQuestions = [...questions];
+      }
+      
+      const index = Math.floor(Math.random() * availableQuestions.length);
+      currentQuestion = availableQuestions[index];
+      usedQuestions.push(currentQuestion);
+      
+      // Display question with category
+      questionEl.innerHTML = `${currentQuestion.question}<br><span class="category-tag">${currentQuestion.category}</span>`;
+      
+      // Display options
+      const opts = currentQuestion.options;
+      buttons.a.textContent = `a) ${opts[0]}`;
+      buttons.b.textContent = `b) ${opts[1]}`;
+      buttons.c.textContent = `c) ${opts[2]}`;
+      buttons.d.textContent = `d) ${opts[3]}`;
+    }
+
+    function handleAnswer(key) {
+      if (answered) return;
+      
+      answered = true;
+      const selectedBtn = buttons[key];
+      const correctBtn = buttons[currentQuestion.correct];
+      
+      // Disable all buttons
+      Object.values(buttons).forEach(btn => btn.disabled = true);
+      
+      // Highlight correct answer in green
+      correctBtn.classList.add("correct");
+      
+      if (key === currentQuestion.correct) {
+        // Correct answer
+        resultEl.textContent = `Správne! Hráč ${currentPlayer === 1 ? 'Sabi' : 'Milan'} získava 10 bodov.`;
+        resultEl.classList.add("correct-result");
+        
+        // Update score
+        if (currentPlayer === 1) {
+          player1Score += 10;
+          score1El.textContent = player1Score;
+        } else {
+          player2Score += 10;
+          score2El.textContent = player2Score;
+        }
+      } else {
+        // Incorrect answer
+        selectedBtn.classList.add("incorrect");
+        resultEl.textContent = `Nesprávne! Hráč ${currentPlayer === 1 ? 'Sabi' : 'Milan'} stráca 10 bodov.`;
+        resultEl.classList.add("incorrect-result");
+        
+        // Subtract 10 points for wrong answer
+        if (currentPlayer === 1) {
+          player1Score -= 10;
+          score1El.textContent = player1Score;
+        } else {
+          player2Score -= 10;
+          score2El.textContent = player2Score;
+        }
+      }
+      
+      // Check for winner
+      if (player1Score >= winningScore || player2Score >= winningScore) {
+        setTimeout(showVictoryScreen, 1500);
+      } else {
+        // Enable next button after delay
+        setTimeout(() => {
+          nextBtn.disabled = false;
+        }, 2000);
+      }
+    }
+
+    function showVictoryScreen() {
+      // Determine winner
+      let winner;
+      if (player1Score >= winningScore && player2Score >= winningScore) {
+        winner = player1Score > player2Score ? "Sabi" : 
+                (player2Score > player1Score ? "Milan" : "Remíza!");
+      } else if (player1Score >= winningScore) {
+        winner = "Sabi";
+      } else {
+        winner = "Milan";
+      }
+      
+      // Update victory screen
+      winnerNameEl.textContent = winner;
+      finalScore1El.textContent = player1Score;
+      finalScore2El.textContent = player2Score;
+      
+      // Create confetti effect
+      createConfetti();
+      
+      // Show victory screen
+      victoryOverlay.classList.add("active");
+    }
+
+    function createConfetti() {
+      const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+      const container = document.querySelector('.container');
+      
+      for (let i = 0; i < 150; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.animationDelay = Math.random() * 5 + 's';
+        confetti.style.width = Math.random() * 10 + 5 + 'px';
+        confetti.style.height = Math.random() * 10 + 5 + 'px';
+        container.appendChild(confetti);
+      }
+    }
+
+    function resetGame() {
+      // Reset scores
+      player1Score = 0;
+      player2Score = 0;
+      score1El.textContent = "0";
+      score2El.textContent = "0";
+      
+      // Reset used questions
+      usedQuestions = [];
+      
+      // Reset player
+      currentPlayer = 1;
+      
+      // Hide victory screen
+      victoryOverlay.classList.remove("active");
+      
+      // Remove confetti
+      document.querySelectorAll('.confetti').forEach(el => el.remove());
+      
+      // Load new question
+      loadQuestion();
+    }
+
+    function nextQuestion() {
+      // Switch player
+      currentPlayer = currentPlayer === 1 ? 2 : 1;
+      loadQuestion();
+    }
+
+    // Event listeners
+    buttons.a.addEventListener("click", () => handleAnswer("a"));
+    buttons.b.addEventListener("click", () => handleAnswer("b"));
+    buttons.c.addEventListener("click", () => handleAnswer("c"));
+    buttons.d.addEventListener("click", () => handleAnswer("d"));
+    nextBtn.addEventListener("click", nextQuestion);
+    newGameBtn.addEventListener("click", resetGame);
+
+    // Initialize
+    loadQuestion();
+  </script>
+</body>
+</html>
