@@ -446,7 +446,7 @@
 <body>
   <div class="container">
     <div class="goal-marker">
-      <i class="fas fa-trophy"></i> Víťazstvo: 150 bodov
+      <i class="fas fa-trophy"></i> Víťazstvo: 100 bodov
     </div>
     
     <header>
@@ -485,7 +485,7 @@
       <div class="victory-content">
         <h2><i class="fas fa-trophy"></i> Víťaz AZ-kvízu</h2>
         <div class="winner-name" id="winner-name">Sabi</div>
-        <p>Gratulujeme k dosiahnutiu 150 bodov!</p>
+        <p>Gratulujeme k dosiahnutiu 100 bodov!</p>
         
         <div class="final-score">
           <span class="sabi-score">Sabi: <span id="final-score1">0</span></span>
@@ -4812,7 +4812,7 @@
     let player1Score = 0;
     let player2Score = 0;
     let usedQuestions = [];
-    const winningScore = 150;
+    const winningScore = 100;
 
     const questionEl = document.getElementById("question");
     const buttons = {
@@ -4918,7 +4918,7 @@
       
       // Check for winner
       if (player1Score >= winningScore || player2Score >= winningScore) {
-        setTimeout(showVictoryScreen, 1500);
+        setTimeout(showVictoryScreen, 1000);
       } else {
         // Enable next button after delay
         setTimeout(() => {
@@ -4955,7 +4955,7 @@
       const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
       const container = document.querySelector('.container');
       
-      for (let i = 0; i < 150; i++) {
+      for (let i = 0; i < 100; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         confetti.style.left = Math.random() * 100 + '%';
