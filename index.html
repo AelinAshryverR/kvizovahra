@@ -113,14 +113,14 @@
       align-items: center;
     }
     
-    .answers {
+    .corrects {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 15px;
       margin-bottom: 20px;
     }
     
-    .answers button {
+    .corrects button {
       padding: 15px;
       font-size: 1.1rem;
       border: none;
@@ -134,7 +134,7 @@
       overflow: hidden;
     }
     
-    .answers button:before {
+    .corrects button:before {
       content: '';
       position: absolute;
       top: 0;
@@ -146,17 +146,17 @@
       transition: transform 0.3s ease;
     }
     
-    .answers button:hover:before {
+    .corrects button:hover:before {
       transform: translateX(100%);
     }
     
-    .answers button:hover {
+    .corrects button:hover {
       transform: translateY(-3px);
       box-shadow: 0 5px 10px rgba(0,0,0,0.15);
       background: linear-gradient(to bottom, #e3e8ee, #d1d8e0);
     }
     
-    .answers button:disabled {
+    .corrects button:disabled {
       cursor: not-allowed;
     }
     
@@ -411,7 +411,7 @@
     }
     
     @media (max-width: 600px) {
-      .answers {
+      .corrects {
         grid-template-columns: 1fr;
       }
       
@@ -465,7 +465,7 @@
     <div class="question-box">
       <div id="question" class="question"></div>
       
-      <div class="answers">
+      <div class="corrects">
         <button id="a"></button>
         <button id="b"></button>
         <button id="c"></button>
@@ -2128,91 +2128,91 @@
   {
     question: "Ako sa volá ríša, v ktorej sa odohráva väčšina príbehu ACOTAR?",
     options: ["Prythian", "Velaris", "Hybern", "Illyria"],
-    answer: "A",
+    correct: "a",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá matka Rhysa?",
     options: ["Thea", "Seren", "Nepomenovaná", "Soren"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá ríša, z ktorej pochádza Tamlin?",
     options: ["Zimný dvor", "Jarný dvor", "Jesenný dvor", "Letný dvor"],
-    answer: "B",
+    correct: "B",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá hlavná zbraň, ktorou Feyre zabila kráľa Hybernu?",
     options: ["Meč hviezdneho svetla", "Dýka temna", "Nezabila ju", "Dýka z dračieho skla"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
   {
     question: "Kto bol pôvodným vlastníkom mesta Velaris?",
     options: ["Rhysand", "Matka všetkého", "Starší Fery", "Amarantha"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
   {
     question: "Kto bol najväčšou hrozbou v tretej časti série?",
     options: ["Amarantha", "King of Hybern", "Tamlin", "Lucien"],
-    answer: "B",
+    correct: "B",
     category: "Sarah J. Mass"
   },
   {
     question: "Akú schopnosť má Feyre po rozdelení moci od všetkých veľkých lordov?",
     options: ["Ovláda len oheň", "Premenuje sa na čokoľvek", "Má schopnosti všetkých siedmich dvorov", "Vie čítať myšlienky"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá zbraň, ktorú Cassian používa najčastejšie?",
     options: ["Meč", "Sekera", "Dýka", "Holé päste"],
-    answer: "A",
+    correct: "A",
     category: "Sarah J. Mass"
   },
   {
     question: "Kto sa stane partnerom Nesty?",
     options: ["Lucien", "Azriel", "Tamlin", "Cassian"],
-    answer: "D",
+    correct: "D",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá kniha moci, ktorú musia Feyre a jej spojenci nájsť?",
     options: ["Kniha noci", "Kniha dychu", "Kniha rozštiepenia", "Kniha dychu a tieňov"],
-    answer: "D",
+    correct: "D",
     category: "Sarah J. Mass"
   },
   {
     question: "Aký je názov bariéry medzi ríšou smrteľníkov a víl?",
     options: ["Krvavý bariéra", "Priechod smrti", "Žľab", "Stena"],
-    answer: "D",
+    correct: "D",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá Illyrijská dedina, kde trénovali Cassian a Azriel?",
     options: ["Ruhn", "Windhaven", "Morva", "Thesan"],
-    answer: "B",
+    correct: "B",
     category: "Sarah J. Mass"
   },
   {
     question: "Ako sa volá miesto, kde Feyre získava silu, aby zabila Amaranthu?",
     options: ["Jazero duší", "Jaskyňa smrti", "Podhora", "Chrám očistenia"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
   {
     question: "Aká je schopnosť Mor (Morrigan)?",
     options: ["Cestovanie", "Pravda", "Ilúzie", "Zabíjanie dotykom"],
-    answer: "B",
+    correct: "B",
     category: "Sarah J. Mass"
   },
   {
     question: "Kto je 'The Suriel'?",
     options: ["Démonický duch", "Starodávna víla", "Bytosť, ktorá pozná pravdu", "Zvieracia príšera"],
-    answer: "C",
+    correct: "C",
     category: "Sarah J. Mass"
   },
     {
@@ -6890,7 +6890,7 @@
 
     let currentQuestion = {};
     let currentPlayer = 1;
-    let answered = false;
+    let corrected = false;
     let player1Score = 0;
     let player2Score = 0;
     let usedQuestions = [];
@@ -6917,7 +6917,7 @@
 
     function loadQuestion() {
       // Reset UI
-      answered = false;
+      corrected = false;
       resultEl.textContent = "";
       resultEl.className = "result";
       nextBtn.disabled = true;
@@ -6956,21 +6956,21 @@
       buttons.d.textContent = `d) ${opts[3]}`;
     }
 
-    function handleAnswer(key) {
-      if (answered) return;
+    function handlecorrect(key) {
+      if (corrected) return;
       
-      answered = true;
+      corrected = true;
       const selectedBtn = buttons[key];
       const correctBtn = buttons[currentQuestion.correct];
       
       // Disable all buttons
       Object.values(buttons).forEach(btn => btn.disabled = true);
       
-      // Highlight correct answer in green
+      // Highlight correct correct in green
       correctBtn.classList.add("correct");
       
       if (key === currentQuestion.correct) {
-        // Correct answer
+        // Correct correct
         resultEl.textContent = `Správne! Hráč ${currentPlayer === 1 ? 'Sabi' : 'Milan'} získava 10 bodov.`;
         resultEl.classList.add("correct-result");
         
@@ -6983,12 +6983,12 @@
           score2El.textContent = player2Score;
         }
       } else {
-        // Incorrect answer
+        // Incorrect correct
         selectedBtn.classList.add("incorrect");
         resultEl.textContent = `Nesprávne! Hráč ${currentPlayer === 1 ? 'Sabi' : 'Milan'} stráca 10 bodov.`;
         resultEl.classList.add("incorrect-result");
         
-        // Subtract 10 points for wrong answer
+        // Subtract 10 points for wrong correct
         if (currentPlayer === 1) {
           player1Score -= 10;
           score1El.textContent = player1Score;
@@ -7079,10 +7079,10 @@
     }
 
     // Event listeners
-    buttons.a.addEventListener("click", () => handleAnswer("a"));
-    buttons.b.addEventListener("click", () => handleAnswer("b"));
-    buttons.c.addEventListener("click", () => handleAnswer("c"));
-    buttons.d.addEventListener("click", () => handleAnswer("d"));
+    buttons.a.addEventListener("click", () => handlecorrect("a"));
+    buttons.b.addEventListener("click", () => handlecorrect("b"));
+    buttons.c.addEventListener("click", () => handlecorrect("c"));
+    buttons.d.addEventListener("click", () => handlecorrect("d"));
     nextBtn.addEventListener("click", nextQuestion);
     newGameBtn.addEventListener("click", resetGame);
 
